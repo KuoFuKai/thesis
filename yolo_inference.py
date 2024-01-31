@@ -44,7 +44,7 @@ def yolo_inference(source):
                         cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
                         cv2.putText(img, f"{classNames[cls]} {confidence:.2f}", (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1,
                                     (255, 0, 0), 2)
-                        if confidence > max_confidence:
+                        if confidence > max_confidence or (len(boxes) == 1 and confidence >= conf_threshold):
                             max_confidence = confidence
                             detected_queue.put(classNames[cls])
 
