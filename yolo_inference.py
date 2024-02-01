@@ -23,6 +23,7 @@ def yolo_inference(source):
     classNames = ["tiger", "tiger-cub", "white-tiger"]
 
     max_confidence = 0
+    last_object = None
 
     paused = False  # 暂停状态
 
@@ -32,7 +33,7 @@ def yolo_inference(source):
             if not success:
                 break  # 视频结束或摄像头关闭时退出循环
 
-            results = model(img, stream=True)
+            results = model(img, stream=True, verbose=False)  # verbose=False關閉輸出結果到console
 
             for r in results:
                 boxes = r.boxes
@@ -46,7 +47,11 @@ def yolo_inference(source):
                                     (255, 0, 0), 2)
                         if confidence > max_confidence or (len(boxes) == 1 and confidence >= conf_threshold):
                             max_confidence = confidence
-                            detected_queue.put(classNames[cls])
+                            className = classNames[cls]
+                            if last_object != className:
+                                print(className)
+                                last_object = className
+                                detected_queue.put(className)
 
         cv2.imshow('YOLO Inference', img)
 
