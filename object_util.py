@@ -1,4 +1,4 @@
-from yolo_inference import detected_queue
+from yolo_util import detected_queue
 from queue import Empty
 from llm_util import ask_question
 import pyttsx3

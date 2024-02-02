@@ -16,9 +16,7 @@ def ask_question(llm, question):
     return response
 
 
-def qa(llm):
-    # 初始化 TTS 引擎
-    engine = pyttsx3.init()
+def qa(llm, llm_tts_engine):
     # 初始化語音辨識引擎
     recognizer = sr.Recognizer()
     while True:
@@ -33,8 +31,8 @@ def qa(llm):
                     break
 
                 print(f"您問的問題是: '{user_input}', 是否繼續？")
-                engine.say(f"您問的問題是: '{user_input}', 是否繼續？")
-                engine.runAndWait()
+                llm_tts_engine.say(f"您問的問題是: '{user_input}', 是否繼續？")
+                llm_tts_engine.runAndWait()
 
                 with sr.Microphone() as source2:
                     recognizer.adjust_for_ambient_noise(source2)
@@ -50,8 +48,8 @@ def qa(llm):
                 if '繼續' in confirmation:
                     answer = ask_question(llm, user_input)
                     print(answer)
-                    engine.say(answer)
-                    engine.runAndWait()
+                    llm_tts_engine.say(answer)
+                    llm_tts_engine.runAndWait()
                 else:
                     print("已取消")
             except sr.UnknownValueError:
