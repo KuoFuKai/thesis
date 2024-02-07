@@ -3,14 +3,14 @@ import time
 from threading import Thread
 import multiprocessing
 
-# 全局变量，用于控制线程的运行
+# 全域變量，用於控制執行緒的運行
 running = True
 
 
 def threaded(fn):
     def wrapper(*args, **kwargs):
         global running
-        running = True  # 每次调用线程前确保running为True
+        running = True  # 每次呼叫執行緒前確保running為True
         thread = Thread(target=fn, args=args, kwargs=kwargs)
         thread.start()
         return thread
@@ -26,17 +26,17 @@ def speak(phrase):
 
 @threaded
 def manage_process(p):
-    while p.is_alive() and running:  # 检查进程是否活着且运行标志为真
+    while p.is_alive() and running:  # 檢查程序是否活著且執行標誌為真
         continue
-    if not running:  # 如果运行标志变为假，则终止进程
+    if not running:  # 如果執行標誌變成假，則終止進程
         p.terminate()
 
 
 def say(phrase):
     print(phrase)
     global running
-    running = False  # 设置运行标志为假，以终止之前的线程
-    time.sleep(0.1)  # 稍作延迟，确保线程有时间响应运行标志的变化
+    running = False  # 設定運行標誌為假，以終止先前的執行緒
+    time.sleep(0.1)  # 稍作延遲，確保執行緒有時間回應運行標誌的變化
 
     p = multiprocessing.Process(target=speak, args=(phrase,))
     p.start()
