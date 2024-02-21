@@ -8,7 +8,7 @@ from tts_util import say
 if __name__ == '__main__':
     say("程式初始化請稍後")
     # 初始化 LLM
-    llm = llm_setup("MediaTek-Research/Breeze-7B-Instruct-64k-v0_1")
+    llm = llm_setup("MediaTek-Research/Breeze-7B-Instruct-v0_1")
     say("載入大語言模型成功")
     # 初始化 Yolo
     model = YOLO("best.pt")
