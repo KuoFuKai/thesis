@@ -14,8 +14,8 @@ prompt = PromptTemplate(template=template, input_variables=["question", "object"
 def ask_question(llm, question):
     say("處理中請稍後")
     llm_chain = LLMChain(prompt=prompt, llm=llm)
-    response = llm_chain.run({"question": question, "object": variable.detected_obj})
-    return response
+    response = llm_chain.invoke({"question": question, "object": variable.detected_obj})
+    return response["text"]
 
 
 def interact(llm):

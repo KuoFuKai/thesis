@@ -14,6 +14,6 @@ if __name__ == '__main__':
     model = YOLO("best.pt")
     say("載入物件辨識模型成功")
     # 執行物件辨識
-    threading.Thread(target=inference, args=("webcam", model, llm,)).start()
+    threading.Thread(target=inference, args=("test.mp4", model, llm,)).start()
     # 進行QA環節
     threading.Thread(target=interact, args=(llm,)).start()
