@@ -6,10 +6,10 @@ from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
 def llm_setup(model_id):
     # 配置BitsAndBytes的設定
     quantization_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_compute_dtype=torch.float16,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_use_double_quant=True,
+        load_in_8bit=True,
+        bnb_8bit_compute_dtype=torch.float16,
+        bnb_8bit_quant_type="nf8",
+        bnb_8bit_use_double_quant=True,
     )
 
     # 加載模型和分詞器
