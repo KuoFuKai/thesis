@@ -20,6 +20,7 @@ def threaded(fn):
 
 def speak(phrase):
     engine = pyttsx3.init()
+    engine.setProperty('voice', 'zh')
     engine.say(phrase)
     engine.runAndWait()
 
@@ -44,6 +45,7 @@ def say(phrase):
 
 
 if __name__ == "__main__":
-    say("Hello, this is the first message.")
+    # say("Hello, this is the first message. ")
+    say("你好呀測試你好呀測試你好呀測試你好呀測試")
     time.sleep(2)
-    say("And this is a second message, after stopping the first one.")
+    # say("And this is a second message, after stopping the first one.")
