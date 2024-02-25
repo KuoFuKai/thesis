@@ -1,13 +1,14 @@
 import cv2
 
 
-def gstreamer(
-        capture_width=1280,
-        capture_height=720,
-        display_width=1280,
-        display_height=720,
-        framerate=60,
-        flip_method=0,
+# 設定gstreamer管道參數
+def gstreamer_pipeline(
+        capture_width=1280,  # 相機預先擷取的影像寬度
+        capture_height=720,  # 相機預先擷取的影像高度
+        display_width=1280,  # 視窗顯示的影像寬度
+        display_height=720,  # 視窗顯示的影像高度
+        framerate=60,  # 捕捉幀率
+        flip_method=0,  # 是否旋轉影像
 ):
     return (
             "nvarguscamerasrc ! "
@@ -29,26 +30,23 @@ def gstreamer(
     )
 
 
-def show_camera():
-    # To flip the image, modify the flip_method parameter (0 and 2 are the most common)
-    print(gstreamer(flip_method=0))
-    cap = cv2.VideoCapture(gstreamer(flip_method=0), cv2.CAP_GSTREAMER)
+if __name__ == "__main__":
+    # 管道與視訊串流綁定
+    cap = cv2.VideoCapture(gstreamer_pipeline(flip_method=0), cv2.CAP_GSTREAMER)
+
     if cap.isOpened():
         window_handle = cv2.namedWindow("CSI Camera", cv2.WINDOW_AUTOSIZE)
-        # Window
+
+        # 逐幀顯示
         while cv2.getWindowProperty("CSI Camera", 0) >= 0:
             ret_val, img = cap.read()
             cv2.imshow("CSI Camera", img)
-            # This also acts as
+
             keyCode = cv2.waitKey(30) & 0xFF
-            # Stop the program on the ESC key
-            if keyCode == 27:
+            if keyCode == 27:  # ESC鍵退出
                 break
+
         cap.release()
         cv2.destroyAllWindows()
     else:
-        print("Unable to open camera")
-
-
-if __name__ == "__main__":
-    show_camera()
+        print("打開相機失敗")
