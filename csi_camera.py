@@ -31,6 +31,16 @@ def gstreamer_pipeline(
 
 
 if __name__ == "__main__":
+    capture_width = 1280
+    capture_height = 720
+    display_width = 1280
+    display_height = 720
+    framerate = 60
+    flip_method = 0
+
+    # 创建管道
+    print(gstreamer_pipeline(capture_width, capture_height, display_width, display_height, framerate, flip_method))
+
     # 管道與視訊串流綁定
     cap = cv2.VideoCapture(gstreamer_pipeline(flip_method=0), cv2.CAP_GSTREAMER)
 
