@@ -1,4 +1,5 @@
 import cv2
+print(cv2.getBuildInformation())
 
 # Reading BGRx frames into opencv:
 cap = cv2.VideoCapture(
