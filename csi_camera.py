@@ -2,10 +2,10 @@ import cv2
 
 
 def gstreamer(
-        capture_width=640,
-        capture_height=480,
-        display_width=640,
-        display_height=480,
+        capture_width=1280,
+        capture_height=720,
+        display_width=1280,
+        display_height=720,
         framerate=60,
         flip_method=0,
 ):
