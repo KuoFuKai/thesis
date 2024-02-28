@@ -21,14 +21,15 @@ def ask_question(llm, question):
 def interact(llm):
     # 初始化語音辨識引擎
     recognizer = sr.Recognizer()
-    while True:
-        with sr.Microphone() as source:
+    with sr.Microphone() as source:
+        while True:
             print("請問您的問題（或輸入 '關機' 退出）: ")
             recognizer.adjust_for_ambient_noise(source)
             audio = recognizer.listen(source)
 
             try:
                 user_input = recognizer.recognize_google(audio, language='zh-TW')
+                print(user_input)
                 if user_input in '關機' or user_input in 'exit':
                     os._exit(0)
 
@@ -51,6 +52,7 @@ def interact(llm):
                     say(answer)
                 else:
                     say("已取消")
+
             except sr.UnknownValueError:
                 print("Google Speech Recognition 無法理解音訊")
             except sr.RequestError:
