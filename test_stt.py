@@ -2,10 +2,9 @@ import speech_recognition as sr
 
 def continuous_recognition():
     recognizer = sr.Recognizer()
-    mic = sr.Microphone()
 
     # 使用麦克风作为源不断监听
-    with mic as source:
+    with sr.Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
         print("现在开始持续监听，请说些什么...")
 
