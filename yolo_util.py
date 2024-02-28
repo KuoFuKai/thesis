@@ -87,9 +87,9 @@ if __name__ == '__main__':
     from llm_setup import llm_setup
 
     # 初始化 LLM
-    llm = llm_setup("MediaTek-Research/Breeze-7B-Instruct-64k-v0_1")
+    llm = llm_setup("MediaTek-Research/Breeze-7B-Instruct-v0_1")
     # 初始化 Yolo
     model = YOLO("best.pt")
 
-    inference("CSI", model, llm, )
+    inference("webcam", model, llm, )
 
