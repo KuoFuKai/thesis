@@ -42,9 +42,9 @@ def interact(llm):
                         confirmation = recognizer.recognize_google(audio, language='zh-TW')
                         print(confirmation)
                     except sr.UnknownValueError:
-                        # print("Google Speech Recognition 無法理解音訊")
+                        pass  # print("Google Speech Recognition 無法理解音訊")
                     except sr.RequestError:
-                        # print("無法從 Google Speech Recognition 服務請求資料")
+                        pass  # print("無法從 Google Speech Recognition 服務請求資料")
 
                 if '繼續' in confirmation:
                     answer = ask_question(llm, user_input)
@@ -53,6 +53,6 @@ def interact(llm):
                     say("已取消")
 
             except sr.UnknownValueError:
-                    # print("Google Speech Recognition 無法理解音訊")
+                pass  # print("Google Speech Recognition 無法理解音訊")
             except sr.RequestError:
-                    # print("無法從 Google Speech Recognition 服務請求資料")
+                pass  # print("無法從 Google Speech Recognition 服務請求資料")
