@@ -1,4 +1,5 @@
 # yolo_util.py
+import sys
 import time
 
 import cv2  # 引入 OpenCV 庫
@@ -29,6 +30,11 @@ def inference(source, model, llm):
 
     cap.set(3, 640)  # 設置寬度
     cap.set(4, 480)  # 設置高度
+
+    if not cap.isOpened():
+        print("無法打開相機")
+        sys.exit()
+        return
 
     while True:
         if not paused:
