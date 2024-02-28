@@ -1,7 +1,6 @@
 import sys
 import cv2
 
-
 def gstreamer_pipeline(
         sensor_id=0,
         capture_width=1280,
@@ -29,19 +28,15 @@ def gstreamer_pipeline(
             )
     )
 
-
 def main():
     print(gstreamer_pipeline(flip_method=0))
     cap = cv2.VideoCapture(gstreamer_pipeline(flip_method=0), cv2.CAP_GSTREAMER)
-    print(True)
-    frame = [None] * 1
     if cap.isOpened():
         try:
             while True:
-                ret, frame[0] = cap.read()
+                ret, frame = cap.read()
                 if ret:
-                    # cv2.imshow("video", frame)
-                    print(True)
+                    cv2.imshow("video", frame)  # 顯示視頻幀
                 else:
                     print("Not read")
 
@@ -49,11 +44,12 @@ def main():
                 if keyCode == 27 or keyCode == ord('q'):
                     break
         except KeyboardInterrupt:
-            cap.release()
-            cv2.destroyAllWindows()
             print("Bye")
-            sys.exit()
-
+        finally:
+            cap.release()
+            cv2.destroyAllWindows()  # 關閉窗口
+    else:
+        print("Unable to open camera")
 
 if __name__ == "__main__":
     main()
