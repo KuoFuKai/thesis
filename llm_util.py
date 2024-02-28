@@ -29,7 +29,6 @@ def interact(llm):
 
             try:
                 user_input = recognizer.recognize_google(audio, language='zh-TW')
-                print(user_input)
                 if user_input in '關機' or user_input in 'exit':
                     os._exit(0)
 
