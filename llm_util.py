@@ -23,7 +23,7 @@ def interact(llm):
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         while True:
-            print("請問您的問題（或輸入 '關機' 退出）: ")
+            # print("請問您的問題（或輸入 '關機' 退出）: ")
             recognizer.adjust_for_ambient_noise(source)
             audio = recognizer.listen(source)
 
@@ -42,9 +42,9 @@ def interact(llm):
                         confirmation = recognizer.recognize_google(audio, language='zh-TW')
                         print(confirmation)
                     except sr.UnknownValueError:
-                        print("Google Speech Recognition 無法理解音訊")
+                        # print("Google Speech Recognition 無法理解音訊")
                     except sr.RequestError:
-                        print("無法從 Google Speech Recognition 服務請求資料")
+                        # print("無法從 Google Speech Recognition 服務請求資料")
 
                 if '繼續' in confirmation:
                     answer = ask_question(llm, user_input)
@@ -53,6 +53,6 @@ def interact(llm):
                     say("已取消")
 
             except sr.UnknownValueError:
-                print("Google Speech Recognition 無法理解音訊")
+                    # print("Google Speech Recognition 無法理解音訊")
             except sr.RequestError:
-                print("無法從 Google Speech Recognition 服務請求資料")
+                    # print("無法從 Google Speech Recognition 服務請求資料")
