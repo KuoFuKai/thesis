@@ -24,13 +24,14 @@ def inference(source, model, llm):
     if source == "CSI":
         cap = cv2.VideoCapture(gstreamer_pipeline(flip_method=0), cv2.CAP_GSTREAMER)
         cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
+        cap.set(3, 640)  # 設置寬度
+        cap.set(4, 480)  # 設置高度
     elif source == "webcam":
         cap = cv2.VideoCapture(0)
+        cap.set(3, 640)  # 設置寬度
+        cap.set(4, 480)  # 設置高度
     else:
         cap = cv2.VideoCapture(source)
-
-    cap.set(3, 640)  # 設置寬度
-    cap.set(4, 480)  # 設置高度
 
     if not cap.isOpened():
         print("無法打開相機")
