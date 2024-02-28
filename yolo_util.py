@@ -23,15 +23,14 @@ def inference(source, model, llm):
     # 確定視頻來源是攝像頭還是視頻文件
     if source == "CSI":
         cap = cv2.VideoCapture(gstreamer_pipeline(flip_method=0), cv2.CAP_GSTREAMER)
-        cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
-        cap.set(3, 640)  # 設置寬度
-        cap.set(4, 480)  # 設置高度
     elif source == "webcam":
         cap = cv2.VideoCapture(0)
-        cap.set(3, 640)  # 設置寬度
-        cap.set(4, 480)  # 設置高度
     else:
         cap = cv2.VideoCapture(source)
+
+    if source not in "CSI":
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # 設置寬度
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)  # 設置高度
 
     if not cap.isOpened():
         print("無法打開相機")
@@ -92,5 +91,5 @@ if __name__ == '__main__':
     # 初始化 Yolo
     model = YOLO("best.pt")
 
-    inference("webcam", model, llm, )
+    inference("CSI", model, llm, )
 
