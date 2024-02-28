@@ -7,7 +7,7 @@ import variable
 from queue import Queue
 from llm_util import ask_question
 from tts_util import say
-from csi_camera import gstreamer
+from csi_camera import gstreamer_pipeline
 
 detected_queue = Queue()
 conf_threshold = 0.8
@@ -21,7 +21,7 @@ def inference(source, model, llm):
 
     # 確定視頻來源是攝像頭還是視頻文件
     if source == "CSI":
-        cap = cv2.VideoCapture(gstreamer(flip_method=0), cv2.CAP_GSTREAMER)
+        cap = cv2.VideoCapture(gstreamer_pipeline(flip_method=0), cv2.CAP_GSTREAMER)
     elif source == "webcam":
         cap = cv2.VideoCapture(0)
     else:
