@@ -23,6 +23,7 @@ def inference(source, model, llm):
     # 確定視頻來源是攝像頭還是視頻文件
     if source == "CSI":
         cap = cv2.VideoCapture(gstreamer_pipeline(flip_method=0), cv2.CAP_GSTREAMER)
+        cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
     elif source == "webcam":
         cap = cv2.VideoCapture(0)
     else:
@@ -90,5 +91,5 @@ if __name__ == '__main__':
     # 初始化 Yolo
     model = YOLO("best.pt")
 
-    inference("test.mp4", model, llm, )
+    inference("CSI", model, llm, )
 
