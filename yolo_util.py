@@ -11,11 +11,12 @@ from tts_util import say
 from csi_camera import gstreamer_pipeline
 
 detected_queue = Queue()
-conf_threshold = 0.8
+conf_threshold = 0.65
 
 
-def inference(source, model, llm):
-    classNames = ["老虎", "小老虎", "白老虎"]
+def inference(source, model, llm, rag):
+    # classNames = ["老虎", "小老虎", "白老虎"]
+    classNames = ["全臺首學", "台南明倫堂", "台南文昌閣", "台南泮宮坊"]
     max_confidence = 0  # 最大信心值
     last_object = None  # 最新物件
     paused = False  # 暫停狀態
@@ -50,6 +51,7 @@ def inference(source, model, llm):
                 for box in boxes:
                     cls = int(box.cls[0])
                     confidence = math.ceil(box.conf[0] * 100) / 100
+                    # print(cls, confidence)  #調整信心值參考
                     if confidence >= conf_threshold:
                         x1, y1, x2, y2 = map(int, box.xyxy[0])
                         cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
@@ -65,7 +67,7 @@ def inference(source, model, llm):
 
                                 say("現在偵測到新物體"+detected_obj+"準備為您介紹")
                                 time.sleep(5)
-                                answer = ask_question(llm, "現在出現在面前的新物體，請簡短快速簡介")
+                                answer = ask_question(llm, rag, "現在出現在面前的新物體，請簡短快速簡介")
                                 say(answer)
 
         cv2.imshow('YOLO Inference', img)
@@ -87,9 +89,9 @@ if __name__ == '__main__':
     from llm_setup import llm_setup
 
     # 初始化 LLM
-    llm = llm_setup("MediaTek-Research/Breeze-7B-Instruct-v0_1")
+    llm = llm_setup("MediaTek-Research/Breeze-7B-Instruct-64k-v0_1")
     # 初始化 Yolo
-    model = YOLO("best.pt")
+    model = YOLO("best_tainan.pt")
 
-    inference("CSI", model, llm, )
+    inference("webcam", model, llm, )
 

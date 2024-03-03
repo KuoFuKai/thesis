@@ -1,6 +1,8 @@
 import torch
 from transformers import BitsAndBytesConfig, AutoModelForCausalLM, AutoTokenizer, pipeline
 from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
+from langchain_community.vectorstores.faiss import FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 
 def llm_setup(model_id):
@@ -39,3 +41,9 @@ def llm_setup(model_id):
     llm = HuggingFacePipeline(pipeline=text_generation_pipeline, )
 
     return llm
+
+def rag_setup():
+    db = FAISS.load_local("vector_db",
+                          HuggingFaceEmbeddings(
+                              model_name='sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2'))
+    return db.as_retriever()
