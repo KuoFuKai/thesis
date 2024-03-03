@@ -26,6 +26,18 @@ def ask_question(llm, rag, question):
     response = rag_chain.invoke(formatted_question)
     return response
 
+# from langchain.chains import LLMChain
+# # 定義 prompt 模板
+# template = """<s>[INST] 你是導遊，遊客都只聽得懂中文，關於眼前看到的物體，若請你介紹，請你簡短介紹，若問您問題，也請您簡短回答
+# 。 物體：{object}，問題：{question} [/INST] </s> """
+# prompt = PromptTemplate(template=template, input_variables=["question", "object"])
+#
+#
+# def ask_question(llm, rag, question):
+#     say("處理中請稍後")
+#     llm_chain = LLMChain(prompt=prompt, llm=llm)
+#     response = llm_chain.invoke({"question": question, "object": variable.detected_obj})
+#     return response["text"]
 
 def interact(llm, rag):
     # 初始化語音辨識引擎
