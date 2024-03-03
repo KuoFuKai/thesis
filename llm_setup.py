@@ -30,7 +30,7 @@ def llm_setup(model_id):
         tokenizer=tokenizer,
         use_cache=True,
         device_map="auto",
-        max_length=1500,
+        max_length=10000,
         do_sample=True,
         top_k=5,
         num_return_sequences=1,
@@ -41,6 +41,7 @@ def llm_setup(model_id):
     llm = HuggingFacePipeline(pipeline=text_generation_pipeline, )
 
     return llm
+
 
 def rag_setup():
     db = FAISS.load_local("vector_db",

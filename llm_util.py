@@ -23,7 +23,8 @@ def ask_question(llm, rag, question):
             {"context": rag, "question": RunnablePassthrough()} | prompt | llm | StrOutputParser()
     )
     formatted_question = "{object}，{question}".format(object=variable.detected_obj, question=question)
-    return rag_chain.invoke(formatted_question)
+    response = rag_chain.invoke(formatted_question)
+    return response
 
 
 def interact(llm, rag):
