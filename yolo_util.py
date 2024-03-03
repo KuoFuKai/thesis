@@ -66,8 +66,7 @@ def inference(source, model, llm, rag):
                                 variable.detected_obj = detected_obj
 
                                 say("現在偵測到新物體"+detected_obj+"準備為您介紹")
-                                time.sleep(5)
-                                answer = ask_question(llm, rag, "現在出現在面前的新物體，請簡短快速簡介")
+                                answer = ask_question(llm, rag, "請簡短快速簡介")
                                 say(answer)
 
         cv2.imshow('YOLO Inference', img)
@@ -86,12 +85,13 @@ def inference(source, model, llm, rag):
 
 if __name__ == '__main__':
     from ultralytics import YOLO  # 引入 YOLO 模型
-    from llm_setup import llm_setup
+    from llm_setup import llm_setup, rag_setup
 
     # 初始化 LLM
     llm = llm_setup("MediaTek-Research/Breeze-7B-Instruct-64k-v0_1")
+    rag = rag_setup()
     # 初始化 Yolo
     model = YOLO("best_tainan.pt")
 
-    inference("webcam", model, llm, )
+    inference("webcam", model, llm, rag, )
 
