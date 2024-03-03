@@ -22,8 +22,8 @@ def ask_question(llm, rag, question):
     rag_chain = (
             {"context": rag, "question": RunnablePassthrough()} | prompt | llm | StrOutputParser()
     )
-    question = """{object}，可以請您簡介一下嗎""".format(object=variable.detected_obj)
-    return rag_chain.invoke(question)
+    formatted_question = "{object}，{question}".format(object=variable.detected_obj, question=question)
+    return rag_chain.invoke(formatted_question)
 
 
 def interact(llm, rag):
