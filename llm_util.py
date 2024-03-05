@@ -1,8 +1,7 @@
 import os
 import speech_recognition as sr
+from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
-from langchain.schema.runnable import RunnablePassthrough
-from langchain_core.output_parsers import StrOutputParser
 import variable
 from tts_util import say
 
@@ -14,30 +13,18 @@ template = """<s>[INST]
 [/INST] </s> """
 # 使用模板和定義的問題與上下文創建一個LLMChain實例。
 prompt = PromptTemplate(template=template,
-                        input_variables=["context", "question"],)
+                        input_variables=["context", "question"], )
 
 
 def ask_question(llm, rag, question):
     say("處理中請稍後")
-    rag_chain = (
-            {"context": rag, "question": RunnablePassthrough()} | prompt | llm | StrOutputParser()
-    )
     formatted_question = "{object}，{question}".format(object=variable.detected_obj, question=question)
-    response = rag_chain.invoke(formatted_question)
-    return response
+    rag_chain = RetrievalQA.from_chain_type(llm=llm,
+                                            retriever=rag,
+                                            chain_type="stuff",
+                                            chain_type_kwargs={"prompt": prompt}, )
+    return rag_chain.invoke({"query": formatted_question})["result"]
 
-# from langchain.chains import LLMChain
-# # 定義 prompt 模板
-# template = """<s>[INST] 你是導遊，遊客都只聽得懂中文，關於眼前看到的物體，若請你介紹，請你簡短介紹，若問您問題，也請您簡短回答
-# 。 物體：{object}，問題：{question} [/INST] </s> """
-# prompt = PromptTemplate(template=template, input_variables=["question", "object"])
-#
-#
-# def ask_question(llm, rag, question):
-#     say("處理中請稍後")
-#     llm_chain = LLMChain(prompt=prompt, llm=llm)
-#     response = llm_chain.invoke({"question": question, "object": variable.detected_obj})
-#     return response["text"]
 
 def interact(llm, rag):
     # 初始化語音辨識引擎
