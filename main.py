@@ -8,7 +8,7 @@ from tts_util import say
 
 # 設定命令行參數
 parser = argparse.ArgumentParser(description="啟動物件辨識和語言互動系統")
-parser.add_argument("--source", type=str, default="webcam", help="指定影像來源，可以是 'CSI'、'webcam' 或影片的路徑")
+parser.add_argument("--source", type=str, default="CSI", help="指定影像來源，可以是 'CSI'、'webcam' 或影片的路徑")
 args = parser.parse_args()
 
 if __name__ == '__main__':
