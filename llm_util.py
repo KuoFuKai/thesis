@@ -31,36 +31,40 @@ def interact(llm, rag):
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         while True:
-            # print("請問您的問題（或輸入 '關機' 退出）: ")
-            recognizer.adjust_for_ambient_noise(source)
+            print("請說出您的問題（或說出 '關機' 退出）: ")
+            recognizer.adjust_for_ambient_noise(source, duration=5)  # 減少 duration 以加快反應速度
             audio = recognizer.listen(source)
 
             try:
-                user_input = recognizer.recognize_google(audio, language='zh-TW')
-                if user_input in '關機' or user_input in 'exit':
+                user_input = recognizer.recognize_whisper(audio, language="chinese", model="base")
+                if user_input in ['', '字幕by索兰娅', '字幕製作人Zither Harp', 'fashioned视频區', '我看你很像你', '我都在想', '我认为你会有一个人的心情']:
+                    continue
+                if user_input in ['關機', 'exit']:
+                    print("正在退出...")
                     os._exit(0)
 
-                say(f"您問的問題是: '{user_input}', 是否繼續？")
+                # 提示使用者是否繼續
+                say("'{0}'('繼續'或'取消')".format(user_input))
+                audio = recognizer.listen(source)
+                confirmation = recognizer.recognize_whisper(audio, language="chinese", model="base")
 
-                confirmation = ""
-                with sr.Microphone() as source2:
-                    recognizer.adjust_for_ambient_noise(source2)
-                    audio = recognizer.listen(source2)
-                    try:
-                        confirmation = recognizer.recognize_google(audio, language='zh-TW')
-                        print(confirmation)
-                    except sr.UnknownValueError:
-                        pass  # print("Google Speech Recognition 無法理解音訊")
-                    except sr.RequestError:
-                        pass  # print("無法從 Google Speech Recognition 服務請求資料")
-
-                if '繼續' in confirmation:
+                if '繼續' in confirmation or '继续' in confirmation:
                     answer = ask_question(llm, rag, user_input)
                     say(answer)
                 else:
                     say("已取消")
 
             except sr.UnknownValueError:
-                pass  # print("Google Speech Recognition 無法理解音訊")
+                pass
             except sr.RequestError:
-                pass  # print("無法從 Google Speech Recognition 服務請求資料")
+                pass
+
+
+if __name__ == '__main__':
+    from llm_setup import llm_setup, rag_setup
+
+    # 初始化 LLM
+    llm = llm_setup("MediaTek-Research/Breeze-7B-Instruct-64k-v0_1")
+    rag = rag_setup()
+
+    interact(llm, rag, )
