@@ -5,7 +5,9 @@ def continuous_recognition():
 
     # 使用麦克风作为源不断监听
     with sr.Microphone() as source:
-        recognizer.adjust_for_ambient_noise(source)
+        recognizer.adjust_for_ambient_noise(source, duration=5)
+        # recognizer.energy_threshold = 50
+        # recognizer.dynamic_energy_threshold = False
         print("现在开始持续监听，请说些什么...")
 
         while True:  # 无限循环以持续监听
@@ -13,7 +15,7 @@ def continuous_recognition():
                 print("正在监听...")
                 audio = recognizer.listen(source)
                 print("识别中...")
-                text = recognizer.recognize_google(audio, language='zh-TW')
+                text = recognizer.recognize_whisper(audio, language="chinese", model="small")
                 print("Google 语音识别认为你说的是： " + text)
             except sr.UnknownValueError:
                 print("Google 语音识别无法理解音频")
