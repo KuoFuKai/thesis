@@ -15,7 +15,7 @@ def continuous_recognition():
                 print("正在监听...")
                 audio = recognizer.listen(source)
                 print("识别中...")
-                text = recognizer.recognize_whisper(audio, language="chinese", model="small")
+                text = recognizer.recognize_whisper(audio, language="chinese", model="base")
                 print("Google 语音识别认为你说的是： " + text)
             except sr.UnknownValueError:
                 print("Google 语音识别无法理解音频")
