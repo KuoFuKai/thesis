@@ -37,7 +37,7 @@ def interact(llm, rag):
 
             try:
                 user_input = recognizer.recognize_whisper(audio, language="chinese", model="base")
-                if user_input in ['', '字幕by索兰娅', '字幕製作人Zither Harp', 'fashioned视频區', '我看你很像你', '我都在想', '我认为你会有一个人的心情']:
+                if user_input in ['', '字幕by索兰娅', '字幕製作人Zither Harp', 'fashioned视频區', '我',]:
                     continue
                 if user_input in ['關機', 'exit']:
                     print("正在退出...")
