@@ -37,7 +37,7 @@ def interact(llm, rag):
 
             try:
                 user_input = recognizer.recognize_whisper(audio, language="chinese", model="base")
-                if user_input in ['', '字幕by索兰娅', '字幕製作人Zither Harp', 'fashioned视频區', '我',]:
+                if user_input in ['', '字幕by索兰娅', '字幕製作人Zither Harp', 'fashioned视频區', '我', '我认为']:
                     continue
                 if user_input in ['關機', 'exit']:
                     print("正在退出...")
@@ -46,7 +46,7 @@ def interact(llm, rag):
                 # 提示使用者是否繼續
                 say("'{0}'('繼續'或'取消')".format(user_input))
                 audio = recognizer.listen(source)
-                confirmation = recognizer.recognize_whisper(audio, language="chinese", model="base")
+                confirmation = recognizer.recognize_whisper(audio, language="chinese", model="small")
 
                 if '繼續' in confirmation or '继续' in confirmation:
                     answer = ask_question(llm, rag, user_input)
