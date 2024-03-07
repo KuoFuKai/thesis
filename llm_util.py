@@ -26,33 +26,47 @@ def ask_question(llm, rag, question):
     return rag_chain.invoke({"query": formatted_question})["result"]
 
 
+question_prefix_words = ['hi', '嗨', '害']
+continue_prefix_word = ['yes', 'no']
+
+
 def interact(llm, rag):
     # 初始化語音辨識引擎
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         while True:
-            print("請說出您的問題（或說出 '關機' 退出）: ")
+            print("Ask a question（or say '關機' to exit）: ")
             recognizer.adjust_for_ambient_noise(source, duration=5)  # 減少 duration 以加快反應速度
             audio = recognizer.listen(source)
 
             try:
-                user_input = recognizer.recognize_whisper(audio, language="chinese", model="base")
-                if user_input in ['', '字幕by索兰娅', '字幕製作人Zither Harp', 'fashioned视频區', '我', '我认为']:
+                user_input = recognizer.recognize_whisper(audio, model="base").lower()
+                if any(user_input.startswith(prefix) for prefix in question_prefix_words):
+                    for prefix in question_prefix_words:
+                        if user_input.startswith(prefix):
+                            user_input = user_input[len(prefix):].lstrip()
+                            break
+                else:
+                    print(user_input)
                     continue
+
                 if user_input in ['關機', 'exit']:
                     print("正在退出...")
                     os._exit(0)
 
                 # 提示使用者是否繼續
-                say("'{0}'('繼續'或'取消')".format(user_input))
-                audio = recognizer.listen(source)
-                confirmation = recognizer.recognize_whisper(audio, language="chinese", model="small")
-
-                if '繼續' in confirmation or '继续' in confirmation:
-                    answer = ask_question(llm, rag, user_input)
-                    say(answer)
-                else:
-                    say("已取消")
+                say("'{0}'(yes or no)".format(user_input))
+                while True:
+                    audio = recognizer.listen(source)
+                    confirmation = recognizer.recognize_whisper(audio, model="small").lower().strip('. ')
+                    print(confirmation)
+                    if 'yes' in confirmation:
+                        answer = ask_question(llm, rag, user_input)
+                        say(answer)
+                        break
+                    elif 'no' in confirmation:
+                        say("已取消")
+                        break
 
             except sr.UnknownValueError:
                 pass
