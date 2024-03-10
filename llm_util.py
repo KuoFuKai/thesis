@@ -40,7 +40,7 @@ def interact(llm, rag):
             audio = recognizer.listen(source)
 
             try:
-                user_input = recognizer.recognize_whisper(audio, model="small").lower()
+                user_input = recognizer.recognize_whisper(audio, model="base").lower()
                 if any(user_input.startswith(prefix) for prefix in question_prefix_words):
                     for prefix in question_prefix_words:
                         if user_input.startswith(prefix):
@@ -58,7 +58,7 @@ def interact(llm, rag):
                 say("'{0}'(yes or no)".format(user_input))
                 while True:
                     audio = recognizer.listen(source)
-                    confirmation = recognizer.recognize_whisper(audio, model="small").lower().strip('. ')
+                    confirmation = recognizer.recognize_whisper(audio, model="base").lower().strip('. ')
                     print(confirmation)
                     if 'yes' in confirmation:
                         answer = ask_question(llm, rag, user_input)
