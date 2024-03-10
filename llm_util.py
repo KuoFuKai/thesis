@@ -26,7 +26,7 @@ def ask_question(llm, rag, question):
     return rag_chain.invoke({"query": formatted_question})["result"]
 
 
-question_prefix_words = ['hi', '嗨', '害', '愛', '太']
+question_prefix_words = ['hi', '嗨', '害', '愛', '太', '泰']
 continue_prefix_word = ['yes', 'no']
 
 

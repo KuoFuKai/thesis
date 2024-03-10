@@ -53,10 +53,10 @@ def inference(source, model, llm, rag):
                     confidence = math.ceil(box.conf[0] * 100) / 100
                     # print(cls, confidence)  #調整信心值參考
                     if confidence >= conf_threshold:
-                        x1, y1, x2, y2 = map(int, box.xyxy[0])
-                        cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
-                        cv2.putText(img, f"{classNames[cls]} {confidence:.2f}", (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1,
-                                    (255, 0, 0), 2)
+                        # x1, y1, x2, y2 = map(int, box.xyxy[0])
+                        # cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
+                        # cv2.putText(img, f"{classNames[cls]} {confidence:.2f}", (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1,
+                        #             (255, 0, 0), 2)
                         if confidence > max_confidence or (len(boxes) == 1 and confidence >= conf_threshold):
                             max_confidence = confidence
                             detected_obj = classNames[cls]
@@ -69,7 +69,7 @@ def inference(source, model, llm, rag):
                                 answer = ask_question(llm, rag, "請簡短快速簡介")
                                 say(answer)
 
-        cv2.imshow('YOLO Inference', img)
+        # cv2.imshow('YOLO Inference', img)
 
         # 按鍵處理
         key = cv2.waitKey(1) & 0xFF
