@@ -36,7 +36,7 @@ def interact(llm, rag):
     with sr.Microphone() as source:
         while True:
             print("Ask a question（or say '關機' to exit）: ")
-            recognizer.adjust_for_ambient_noise(source, duration=5)  # 減少 duration 以加快反應速度
+            recognizer.adjust_for_ambient_noise(source)
             audio = recognizer.listen(source)
 
             try:
