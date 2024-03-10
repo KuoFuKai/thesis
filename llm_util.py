@@ -40,8 +40,8 @@ def interact(pause_event, llm, rag):
             audio = recognizer.listen(source)
 
             try:
-                # user_input = recognizer.recognize_whisper(audio, model="base").lower()
-                user_input = recognizer.recognize_google(audio, language='zh-TW').lower()
+                user_input = recognizer.recognize_whisper(audio, model="base").lower()
+                # user_input = recognizer.recognize_google(audio, language='zh-TW').lower()
                 if any(user_input.startswith(prefix) for prefix in question_prefix_words):
                     for prefix in question_prefix_words:
                         if user_input.startswith(prefix):
@@ -62,8 +62,8 @@ def interact(pause_event, llm, rag):
                 say("'{0}'(yes or no)".format(user_input))
                 while True:
                     audio = recognizer.listen(source)
-                    # confirmation = recognizer.recognize_whisper(audio, model="base").lower().strip('. ')
-                    confirmation = recognizer.recognize_google(audio, language='zh-TW').lower().strip('. ')
+                    confirmation = recognizer.recognize_whisper(audio, model="base").lower().strip('. ')
+                    # confirmation = recognizer.recognize_google(audio, language='zh-TW').lower().strip('. ')
                     print(confirmation)
                     if 'yes' in confirmation:
                         answer = ask_question(llm, rag, user_input)
