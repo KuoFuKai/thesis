@@ -6,15 +6,15 @@ import cv2  # 引入 OpenCV 庫
 import math  # 引入數學庫用于計算
 import variable
 from queue import Queue
-from llm_util import ask_question
+from interact_util import ask_question
 from tts_util import say
 from csi_camera import gstreamer_pipeline
 
 detected_queue = Queue()
-conf_threshold = 0.65
+conf_threshold = 0.8
 
 
-def inference(source, pause_event, model, llm, rag):
+def inference(source, model, llm, rag):
     # classNames = ["老虎", "小老虎", "白老虎"]
     classNames = ["全臺首學", "台南孔廟明倫堂", "台南孔廟文昌閣", "台南孔廟泮宮坊"]
     max_confidence = 0  # 最大信心值
@@ -39,7 +39,7 @@ def inference(source, pause_event, model, llm, rag):
         return
 
     while True:
-        if not paused and not pause_event.is_set():
+        if not paused and not variable.pause_detect_event.is_set():
             success, img = cap.read()
             if not success:
                 break  # 視頻結束或攝像頭關閉時退出循環
@@ -67,8 +67,8 @@ def inference(source, pause_event, model, llm, rag):
 
                                 say("現在偵測到新物體"+detected_obj+"準備為您介紹")
                                 answer = ask_question(llm, rag, "請簡短快速簡介")
+                                variable.pause_detect_event.set()
                                 say(answer)
-                                pause_event.set()
 
         # cv2.imshow('YOLO Inference', img)
 

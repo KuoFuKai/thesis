@@ -20,9 +20,7 @@ if __name__ == '__main__':
     # 初始化 Yolo
     model = YOLO("best_tainan.pt")
     say("載入物件辨識模型成功")
-    # TEST
-    pause_event = threading.Event()
     # 執行物件辨識
-    threading.Thread(target=inference, args=(args.source, pause_event, model, llm, rag, )).start()
+    threading.Thread(target=inference, args=(args.source, model, llm, rag,)).start()
     # 進行QA環節
-    threading.Thread(target=interact, args=(pause_event, llm, rag, )).start()
+    threading.Thread(target=interact, args=(llm, rag,)).start()
