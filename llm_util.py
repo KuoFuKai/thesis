@@ -30,13 +30,13 @@ question_prefix_words = ['hi', '嗨', '害', '愛', '太', '泰']
 continue_prefix_word = ['yes', 'no']
 
 
-def interact(llm, rag):
+def interact(pause_event, llm, rag):
     # 初始化語音辨識引擎
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
+        recognizer.adjust_for_ambient_noise(source)
         while True:
             print("Ask a question（or say '關機' to exit）: ")
-            recognizer.adjust_for_ambient_noise(source)
             audio = recognizer.listen(source)
 
             try:
@@ -48,12 +48,15 @@ def interact(llm, rag):
                             user_input = user_input[len(prefix):].lstrip()
                             break
                 else:
+                    if user_input in ['繼續']:
+                        pause_event.clear()
+
+                    if user_input in ['關機', 'exit']:
+                        print("正在退出...")
+                        os._exit(0)
+
                     print(user_input)
                     continue
-
-                if user_input in ['關機', 'exit']:
-                    print("正在退出...")
-                    os._exit(0)
 
                 # 提示使用者是否繼續
                 say("'{0}'(yes or no)".format(user_input))

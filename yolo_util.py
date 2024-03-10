@@ -14,7 +14,7 @@ detected_queue = Queue()
 conf_threshold = 0.65
 
 
-def inference(source, model, llm, rag):
+def inference(source, pause_event, model, llm, rag):
     # classNames = ["老虎", "小老虎", "白老虎"]
     classNames = ["全臺首學", "台南孔廟明倫堂", "台南孔廟文昌閣", "台南孔廟泮宮坊"]
     max_confidence = 0  # 最大信心值
@@ -39,7 +39,7 @@ def inference(source, model, llm, rag):
         return
 
     while True:
-        if not paused:
+        if not paused and not pause_event.is_set():
             success, img = cap.read()
             if not success:
                 break  # 視頻結束或攝像頭關閉時退出循環
@@ -68,6 +68,7 @@ def inference(source, model, llm, rag):
                                 say("現在偵測到新物體"+detected_obj+"準備為您介紹")
                                 answer = ask_question(llm, rag, "請簡短快速簡介")
                                 say(answer)
+                                pause_event.set()
 
         # cv2.imshow('YOLO Inference', img)
 
