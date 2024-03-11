@@ -1,13 +1,11 @@
 # yolo_util.py
 import sys
-import time
-
 import cv2  # 引入 OpenCV 庫
 import math  # 引入數學庫用于計算
 import variable
 from queue import Queue
-from interact_util import ask_question
 from tts_util import say
+from llm_util import ask_question
 from csi_camera import gstreamer_pipeline
 
 detected_queue = Queue()
