@@ -5,6 +5,7 @@ from llm_setup import llm_setup, rag_setup
 from llm_util import interact
 from yolo_util import inference
 from tts_util import say
+from log_util import start_logging_thread
 
 # 設定命令行參數
 parser = argparse.ArgumentParser(description="啟動物件辨識和語言互動系統")
@@ -20,6 +21,8 @@ if __name__ == '__main__':
     # 初始化 Yolo
     model = YOLO("best_tainan.pt")
     say("載入物件辨識模型成功")
+    # 開始記錄LOG
+    start_logging_thread()
     # 執行物件辨識
     threading.Thread(target=inference, args=(args.source, model, llm, rag,)).start()
     # 進行QA環節

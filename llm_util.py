@@ -5,6 +5,7 @@ from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 from tts_util import say
 
+
 # 定義一個prompt模板。
 template = """<s>[INST]
 你是一名導遊，遊客都只聽得懂中文，眼前看到的建築物，若請你介紹，請你簡短介紹，若問您問題，也請您簡短回答。
@@ -54,6 +55,7 @@ def interact(llm, rag):
                             user_input = user_input[len(prefix):].lstrip()
                             break
                 else:
+                    print(user_input)
                     if user_input in ['繼續', '继续']:
                         variable.pause_detect_event.clear()
 
@@ -61,7 +63,6 @@ def interact(llm, rag):
                         print("正在退出...")
                         os._exit(0)
 
-                    print(user_input)
                     continue
 
                 # 提示使用者是否繼續
