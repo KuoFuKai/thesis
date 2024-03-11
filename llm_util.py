@@ -53,6 +53,10 @@ def interact(llm, rag):
                     for prefix in question_prefix_words:
                         if user_input.startswith(prefix):
                             user_input = user_input[len(prefix):].lstrip()
+                            if user_input in ['繼續', '继续']:
+                                variable.pause_detect_event.clear()
+                                continue
+
                             break
                 else:
                     print(user_input)
