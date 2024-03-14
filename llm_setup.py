@@ -1,6 +1,7 @@
 import torch
 from auto_gptq import BaseQuantizeConfig, AutoGPTQForCausalLM
-from transformers import BitsAndBytesConfig, AutoModelForCausalLM, AutoTokenizer, pipeline, TextIteratorStreamer
+from langchain_core.callbacks import CallbackManager, StreamingStdOutCallbackHandler
+from transformers import BitsAndBytesConfig, AutoModelForCausalLM, AutoTokenizer, pipeline, TextStreamer
 from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
 from langchain_community.vectorstores.faiss import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
@@ -36,19 +37,14 @@ def llm_setup(model_id):
     #     )
 
     quantize_config = BaseQuantizeConfig(
-        bits=4,
-        group_size=128,
-        desc_act=False
     )
 
     model_4bit = AutoGPTQForCausalLM.from_quantized(
         model_id,
-        use_safetensors=True,
-        device="cuda:0",
-        quantize_config=quantize_config)
+        device="cuda:0",)
 
     tokenizer = AutoTokenizer.from_pretrained(model_id)
-    streamer = TextStreamer(tokenizer)
+    streamer = TextStreamer(tokenizer, skip_prompt=True)
 
     # 創建pipeline
     text_generation_pipeline = pipeline(
@@ -66,7 +62,9 @@ def llm_setup(model_id):
         streamer=streamer,
     )
 
-    llm = HuggingFacePipeline(pipeline=text_generation_pipeline, )
+    llm = HuggingFacePipeline(pipeline=text_generation_pipeline,
+                              callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
+                              )
 
     return llm
 
