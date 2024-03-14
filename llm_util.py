@@ -27,9 +27,14 @@ def ask_question(llm, rag, question):
                                             chain_type="stuff",
                                             chain_type_kwargs={"prompt": prompt}, )
     answer = rag_chain.invoke({"query": formatted_question})["result"]
+    response = ""
+    # for chunk in rag_chain.stream({"query": formatted_question}):
+    #     response += chunk
+    #     print(chunk, end="", flush=True)
 
     variable.pause_interact_event.set()
     return answer
+    # return response
 
 
 question_prefix_words = ['hi', '嗨', '害', '愛', '太', '泰']
@@ -42,7 +47,7 @@ def interact(llm, rag):
     with sr.Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
         while True:
-            variable.pause_interact_event.wait()
+            # variable.pause_interact_event.wait()
             print("Ask a question（or say '關機' to exit）: ")
             audio = recognizer.listen(source)
 
@@ -94,7 +99,7 @@ if __name__ == '__main__':
     from llm_setup import llm_setup, rag_setup
 
     # 初始化 LLM
-    llm = llm_setup("MediaTek-Research/Breeze-7B-Instruct-64k-v0_1")
+    llm = llm_setup("MaziyarPanahi/Breeze-7B-Instruct-v0_1-GPTQ")
     rag = rag_setup()
 
     interact(llm, rag, )
