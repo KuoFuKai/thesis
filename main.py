@@ -9,13 +9,13 @@ from log_util import start_logging_thread
 
 # 設定命令行參數
 parser = argparse.ArgumentParser(description="啟動物件辨識和語言互動系統")
-parser.add_argument("--source", type=str, default="webcam", help="指定影像來源，可以是 'CSI'、'webcam' 或影片的路徑")
+parser.add_argument("--source", type=str, default="CSI", help="指定影像來源，可以是 'CSI'、'webcam' 或影片的路徑")
 args = parser.parse_args()
 
 if __name__ == '__main__':
     say("程式初始化請稍後")
     # 初始化 LLM
-    llm_model = "MediaTek-Research/Breeze-7B-Instruct-64k-v0_1"
+    llm_model = "MediaTek-Research/Breeze-7B-Instruct-v0_1"
     tokenizer = tokenizer_setup(llm_model)
     streamer = streamer_setup(tokenizer)
     llm = llm_setup(llm_model, tokenizer, streamer)

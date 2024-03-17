@@ -8,7 +8,6 @@ from langchain_community.vectorstores.faiss import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
 
-
 def tokenizer_setup(model_id):
     return AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
 
