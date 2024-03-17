@@ -1,13 +1,12 @@
 import multiprocessing
 import os
 import threading
-from multiprocessing import Queue
-
 import variable
 import speech_recognition as sr
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
-from tts_util import say, say_queue
+from tts_util import say, say_queue, terminate_current_voice_process
+from multiprocessing import Queue
 
 # 定義一個prompt模板。
 template = """<s>[INST]
@@ -19,8 +18,17 @@ template = """<s>[INST]
 prompt = PromptTemplate(template=template,
                         input_variables=["context", "question"], )
 
+ask_process = None
 
 def ask_question(llm, rag, streamer, question):
+    variable.pause_interact_event.set()
+
+    global ask_process
+    if ask_process and ask_process.is_alive():
+        ask_process.terminate()
+        ask_process.join()  # 確保進程已完全結束
+        ask_process = None
+
     say("處理中請稍後")
     formatted_question = "{object}，{question}".format(object=variable.detected_obj, question=question)
     rag_chain = RetrievalQA.from_chain_type(llm=llm,
@@ -31,8 +39,8 @@ def ask_question(llm, rag, streamer, question):
     thread.start()
 
     interact_queue = Queue()
-    p = multiprocessing.Process(target=say_queue, args=(interact_queue,))
-    p.start()
+    ask_process = multiprocessing.Process(target=say_queue, args=(interact_queue,))
+    ask_process.start()
     current_sentence = ""
     for token in streamer:
         print(token, end='', flush=True)
@@ -42,6 +50,8 @@ def ask_question(llm, rag, streamer, question):
             current_sentence = ""
     interact_queue.put(current_sentence)  # 确保最后一个句子也被加入队列
     interact_queue.put(None)
+
+    variable.pause_interact_event.clear()
 
 
 def async_run(qa, input_text):
@@ -57,8 +67,7 @@ def interact(llm, rag, streamer):
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
-        while True:
-            # variable.pause_interact_event.wait()
+        while not variable.pause_interact_event.is_set():
             print("Ask a question（or say '關機' to exit）: ")
             audio = recognizer.listen(source)
 
@@ -72,14 +81,14 @@ def interact(llm, rag, streamer):
                             if any(substring in user_input for substring in ['繼續', '继续']):
                                 variable.pause_detect_event.clear()
                                 continue
-
                             break
                 else:
-                    print(user_input)
                     if any(substring in user_input for substring in ['繼續', '继续']):
+                        print(user_input)
                         variable.pause_detect_event.clear()
 
                     if user_input in ['關機', 'exit']:
+                        print(user_input)
                         print("正在退出...")
                         os._exit(0)
 
