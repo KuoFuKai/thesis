@@ -1,10 +1,13 @@
+import multiprocessing
 import os
+import threading
+from multiprocessing import Queue
+
 import variable
 import speech_recognition as sr
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
-from tts_util import say
-
+from tts_util import say, say_queue
 
 # 定義一個prompt模板。
 template = """<s>[INST]
@@ -17,31 +20,39 @@ prompt = PromptTemplate(template=template,
                         input_variables=["context", "question"], )
 
 
-def ask_question(llm, rag, question):
-    variable.pause_interact_event.clear()
-
+def ask_question(llm, rag, streamer, question):
     say("處理中請稍後")
     formatted_question = "{object}，{question}".format(object=variable.detected_obj, question=question)
     rag_chain = RetrievalQA.from_chain_type(llm=llm,
                                             retriever=rag,
                                             chain_type="stuff",
                                             chain_type_kwargs={"prompt": prompt}, )
-    answer = rag_chain.invoke({"query": formatted_question})["result"]
-    response = ""
-    # for chunk in rag_chain.stream({"query": formatted_question}):
-    #     response += chunk
-    #     print(chunk, end="", flush=True)
+    thread = threading.Thread(target=rag_chain.invoke, kwargs={"input": {"query": formatted_question}})
+    thread.start()
 
-    variable.pause_interact_event.set()
-    return answer
-    # return response
+    interact_queue = Queue()
+    p = multiprocessing.Process(target=say_queue, args=(interact_queue,))
+    p.start()
+    current_sentence = ""
+    for token in streamer:
+        print(token, end='', flush=True)
+        current_sentence += token
+        if token in ['\n', '，', '。', '！', ',', '.']:  # 根据需要添加其他终止符
+            interact_queue.put(current_sentence)
+            current_sentence = ""
+    interact_queue.put(current_sentence)  # 确保最后一个句子也被加入队列
+    interact_queue.put(None)
+
+
+def async_run(qa, input_text):
+    qa({"query": input_text}, return_only_outputs=True)
 
 
 question_prefix_words = ['hi', '嗨', '害', '愛', '太', '泰']
 continue_prefix_word = ['yes', 'no']
 
 
-def interact(llm, rag):
+def interact(llm, rag, streamer):
     # 初始化語音辨識引擎
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
@@ -82,7 +93,7 @@ def interact(llm, rag):
                     # confirmation = recognizer.recognize_google(audio, language='zh-TW').lower().strip('. ')
                     print(confirmation)
                     if 'yes' in confirmation:
-                        answer = ask_question(llm, rag, user_input)
+                        answer = ask_question(llm, rag, streamer, user_input)
                         say(answer)
                         break
                     elif 'no' in confirmation:
@@ -96,10 +107,13 @@ def interact(llm, rag):
 
 
 if __name__ == '__main__':
-    from llm_setup import llm_setup, rag_setup
+    from llm_setup import tokenizer_setup, streamer_setup, llm_setup, rag_setup
 
     # 初始化 LLM
-    llm = llm_setup("MaziyarPanahi/Breeze-7B-Instruct-v0_1-GPTQ")
+    llm_model = "MediaTek-Research/Breeze-7B-Instruct-64k-v0_1"
+    tokenizer = tokenizer_setup(llm_model)
+    streamer = streamer_setup(tokenizer)
+    llm = llm_setup(llm_model, tokenizer, streamer)
     rag = rag_setup()
 
-    interact(llm, rag, )
+    interact(llm, rag, streamer, )

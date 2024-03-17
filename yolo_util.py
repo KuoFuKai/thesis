@@ -12,7 +12,7 @@ detected_queue = Queue()
 conf_threshold = 0.8
 
 
-def inference(source, model, llm, rag):
+def inference(source, model, llm, rag, streamer, ):
     # classNames = ["老虎", "小老虎", "白老虎"]
     classNames = ["全臺首學", "台南孔廟明倫堂", "台南孔廟文昌閣", "台南孔廟泮宮坊"]
     max_confidence = 0  # 最大信心值
@@ -64,7 +64,7 @@ def inference(source, model, llm, rag):
                                 variable.detected_obj = detected_obj
 
                                 say("現在偵測到新物體"+detected_obj+"準備為您介紹")
-                                answer = ask_question(llm, rag, "請簡短快速簡介")
+                                answer = ask_question(llm, rag, streamer, "請簡短快速簡介")
                                 variable.pause_detect_event.set()
                                 say(answer)
 

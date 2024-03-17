@@ -1,27 +1,37 @@
 import torch
 from auto_gptq import BaseQuantizeConfig, AutoGPTQForCausalLM
 from langchain_core.callbacks import CallbackManager, StreamingStdOutCallbackHandler
-from transformers import BitsAndBytesConfig, AutoModelForCausalLM, AutoTokenizer, pipeline, TextStreamer
+from transformers import BitsAndBytesConfig, AutoModelForCausalLM, AutoTokenizer, pipeline, TextStreamer, \
+    TextIteratorStreamer
 from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
 from langchain_community.vectorstores.faiss import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
 
-def llm_setup(model_id):
-    # # 配置BitsAndBytes的設定
-    # quantization_config = BitsAndBytesConfig(
-    #     load_in_4bit=True,
-    #     bnb_4bit_compute_dtype=torch.float16,
-    #     bnb_4bit_quant_type="nf4",
-    #     bnb_4bit_use_double_quant=True,
-    # )
-    #
-    # # 加載模型和分詞器
-    # model_4bit = AutoModelForCausalLM.from_pretrained(
-    #     model_id,
-    #     device_map="auto",
-    #     quantization_config=quantization_config,
-    # )
+
+def tokenizer_setup(model_id):
+    return AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
+
+
+def streamer_setup(tokenizer):
+    return TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
+
+
+def llm_setup(model_id, tokenizer, streamer):
+    # 配置BitsAndBytes的設定
+    quantization_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_compute_dtype=torch.float16,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_use_double_quant=True,
+    )
+
+    # 加載模型和分詞器
+    model_4bit = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        device_map="auto",
+        quantization_config=quantization_config,
+    )
     # from vllm import LLM, SamplingParams
     # sampling_params = SamplingParams(temperature=0.0, top_p=1.0, max_tokens=256)
     # llm = LLM(
@@ -36,15 +46,12 @@ def llm_setup(model_id):
     #         use_safetensors=True,
     #     )
 
-    quantize_config = BaseQuantizeConfig(
-    )
-
-    model_4bit = AutoGPTQForCausalLM.from_quantized(
-        model_id,
-        device="cuda:0",)
-
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
-    streamer = TextStreamer(tokenizer, skip_prompt=True)
+    # quantize_config = BaseQuantizeConfig(
+    # )
+    #
+    # model_4bit = AutoGPTQForCausalLM.from_quantized(
+    #     model_id,
+    #     device="cuda:0",)
 
     # 創建pipeline
     text_generation_pipeline = pipeline(
@@ -62,9 +69,7 @@ def llm_setup(model_id):
         streamer=streamer,
     )
 
-    llm = HuggingFacePipeline(pipeline=text_generation_pipeline,
-                              callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
-                              )
+    llm = HuggingFacePipeline(pipeline=text_generation_pipeline, )
 
     return llm
 
