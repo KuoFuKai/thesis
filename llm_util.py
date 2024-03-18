@@ -23,11 +23,10 @@ ask_process = None
 def ask_question(llm, rag, streamer, question):
     variable.pause_interact_event.set()
 
-    global ask_process
-    if ask_process and ask_process.is_alive():
-        ask_process.terminate()
-        ask_process.join()  # 確保進程已完全結束
-        ask_process = None
+    # global ask_process
+    # if ask_process and ask_process.is_alive():
+    #     ask_process.terminate()
+    #     ask_process = None
 
     say("處理中請稍後")
     formatted_question = "{object}，{question}".format(object=variable.detected_obj, question=question)
@@ -43,6 +42,8 @@ def ask_question(llm, rag, streamer, question):
     ask_process.start()
     current_sentence = ""
     for token in streamer:
+        if token == "None" or token is None:
+            break
         print(token, end='', flush=True)
         current_sentence += token
         if token in ['\n', '，', '。', '！', ',', '.']:  # 根据需要添加其他终止符
@@ -54,11 +55,7 @@ def ask_question(llm, rag, streamer, question):
     variable.pause_interact_event.clear()
 
 
-def async_run(qa, input_text):
-    qa({"query": input_text}, return_only_outputs=True)
-
-
-question_prefix_words = ['hi', '嗨', '害', '愛', '太', '泰']
+question_prefix_words = ['Hi', 'hi', '嗨', '害', '愛', '太', '泰']
 continue_prefix_word = ['yes', 'no']
 
 
