@@ -1,12 +1,14 @@
 import multiprocessing
 import os
 import threading
-import variable
+from multiprocessing import Queue
+
 import speech_recognition as sr
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
-from tts_util import say, say_queue, terminate_current_voice_process
-from multiprocessing import Queue
+
+import variable
+from tts_util import say, say_queue
 
 # 定義一個prompt模板。
 template = """<s>[INST]
@@ -21,12 +23,12 @@ prompt = PromptTemplate(template=template,
 ask_process = None
 
 def ask_question(llm, rag, streamer, question):
-    # variable.pause_interact_event.set()
-
-    # global ask_process
-    # if ask_process and ask_process.is_alive():
-    #     ask_process.terminate()
-    #     ask_process = None
+    variable.pause_interact_event.clear()
+    global ask_process
+    if ask_process and ask_process.is_alive():
+        ask_process.terminate()
+        ask_process.join()
+        ask_process = None
 
     say("處理中請稍後")
     formatted_question = "{object}，{question}".format(object=variable.detected_obj, question=question)
@@ -42,17 +44,13 @@ def ask_question(llm, rag, streamer, question):
     ask_process.start()
     current_sentence = ""
     for token in streamer:
-        if token == "None" or token is None:
-            break
         print(token, end='', flush=True)
         current_sentence += token
         if token in ['\n', '，', '。', '！', ',', '.']:  # 根据需要添加其他终止符
             interact_queue.put(current_sentence)
             current_sentence = ""
-    interact_queue.put(current_sentence)  # 确保最后一个句子也被加入队列
     interact_queue.put(None)
-
-    # variable.pause_interact_event.clear()
+    variable.pause_interact_event.set()
 
 
 question_prefix_words = ['Hi', 'hi', '嗨', '害', '愛', '太', '泰']
@@ -64,8 +62,8 @@ def interact(llm, rag, streamer):
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
-        # while not variable.pause_interact_event.is_set():
         while True:
+            variable.pause_interact_event.wait()
             print("Ask a question（or say '關機' to exit）: ")
             audio = recognizer.listen(source)
 
@@ -116,7 +114,7 @@ if __name__ == '__main__':
     from llm_setup import tokenizer_setup, streamer_setup, llm_setup, rag_setup
 
     # 初始化 LLM
-    llm_model = "MediaTek-Research/Breeze-7B-Instruct-v0_1"
+    llm_model = "MediaTek-Research/Breeze-7B-Instruct-64k-v0_1"
     tokenizer = tokenizer_setup(llm_model)
     streamer = streamer_setup(tokenizer)
     llm = llm_setup(llm_model, tokenizer, streamer)

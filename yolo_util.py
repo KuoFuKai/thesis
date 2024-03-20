@@ -64,9 +64,8 @@ def inference(source, model, llm, rag, streamer, ):
                                 variable.detected_obj = detected_obj
 
                                 say("現在偵測到新物體"+detected_obj+"準備為您介紹")
-                                answer = ask_question(llm, rag, streamer, "請簡短快速簡介")
+                                ask_question(llm, rag, streamer, "請簡短快速簡介")
                                 variable.pause_detect_event.set()
-                                say(answer)
 
         # cv2.imshow('YOLO Inference', img)
 

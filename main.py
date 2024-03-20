@@ -4,9 +4,9 @@ import threading
 from ultralytics import YOLO  # 引入 YOLO 模型
 from llm_setup import tokenizer_setup, streamer_setup, llm_setup, rag_setup
 from llm_util import interact
-from yolo_util import inference
-from tts_util import say
 from log_util import start_logging_thread
+from tts_util import say
+from yolo_util import inference
 
 # 設定命令行參數
 parser = argparse.ArgumentParser(description="啟動物件辨識和語言互動系統")
