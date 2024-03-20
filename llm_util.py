@@ -81,12 +81,11 @@ def interact(llm, rag, streamer):
                                 continue
                             break
                 else:
+                    print(user_input)
                     if any(substring in user_input for substring in ['繼續', '继续']):
-                        print(user_input)
                         variable.pause_detect_event.clear()
 
                     if user_input in ['關機', 'exit']:
-                        print(user_input)
                         print("正在退出...")
                         os._exit(0)
 
