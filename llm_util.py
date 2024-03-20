@@ -38,7 +38,6 @@ def ask_question(llm, rag, streamer, question):
     thread.start()
 
     interact_queue = Queue()
-    multiprocessing.set_start_method('spawn')
     ask_process = multiprocessing.Process(target=say_queue, args=(interact_queue,))
     ask_process.start()
     current_sentence = ""

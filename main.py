@@ -1,4 +1,5 @@
 import argparse
+import multiprocessing
 import threading
 from ultralytics import YOLO  # 引入 YOLO 模型
 from llm_setup import tokenizer_setup, streamer_setup, llm_setup, rag_setup
@@ -24,9 +25,11 @@ if __name__ == '__main__':
     # 初始化 Yolo
     yolo_model = YOLO("best_tainan.pt")
     say("載入物件辨識模型成功")
+    # 設置Multi-Processing方式 (For Linux)
+    multiprocessing.set_start_method('spawn')
     # 開始記錄LOG
     start_logging_thread()
     # 執行物件辨識
-    threading.Thread(target=inference, args=(args.source, yolo_model, llm, rag, streamer)).start()
+    threading.Thread(target=inference, args=(args.source, yolo_model, llm, rag, streamer, )).start()
     # 進行QA環節
     threading.Thread(target=interact, args=(llm, rag, streamer, )).start()
