@@ -45,7 +45,6 @@ def say_queue(phrases):
     global current_voice_process
     terminate_current_voice_process()  # 結束目前正在執行的語音輸出進程
     # 建立並啟動新的語音輸出進程
-    multiprocessing.set_start_method('spawn')
     current_voice_process = multiprocessing.Process(target=queue_worker, args=(phrases, ))
     current_voice_process.start()
 
