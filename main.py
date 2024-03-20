@@ -26,7 +26,7 @@ if __name__ == '__main__':
     yolo_model = YOLO("best_tainan.pt")
     say("載入物件辨識模型成功")
     # 設置Multi-Processing方式 (For Linux)
-    multiprocessing.set_start_method('spawn')
+    multiprocessing.set_start_method('spawn', force=True)
     # 開始記錄LOG
     start_logging_thread()
     # 執行物件辨識
