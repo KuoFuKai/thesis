@@ -116,7 +116,7 @@ if __name__ == '__main__':
     from llm_setup import tokenizer_setup, streamer_setup, llm_setup, rag_setup
 
     # 初始化 LLM
-    llm_model = "MediaTek-Research/Breeze-7B-Instruct-64k-v0_1"
+    llm_model = "MediaTek-Research/Breeze-7B-Instruct-v0_1"
     tokenizer = tokenizer_setup(llm_model)
     streamer = streamer_setup(tokenizer)
     llm = llm_setup(llm_model, tokenizer, streamer)
