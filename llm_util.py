@@ -21,7 +21,7 @@ prompt = PromptTemplate(template=template,
 ask_process = None
 
 def ask_question(llm, rag, streamer, question):
-    variable.pause_interact_event.set()
+    # variable.pause_interact_event.set()
 
     # global ask_process
     # if ask_process and ask_process.is_alive():
@@ -52,7 +52,7 @@ def ask_question(llm, rag, streamer, question):
     interact_queue.put(current_sentence)  # 确保最后一个句子也被加入队列
     interact_queue.put(None)
 
-    variable.pause_interact_event.clear()
+    # variable.pause_interact_event.clear()
 
 
 question_prefix_words = ['Hi', 'hi', '嗨', '害', '愛', '太', '泰']
@@ -64,7 +64,8 @@ def interact(llm, rag, streamer):
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
-        while not variable.pause_interact_event.is_set():
+        # while not variable.pause_interact_event.is_set():
+        while True:
             print("Ask a question（or say '關機' to exit）: ")
             audio = recognizer.listen(source)
 
