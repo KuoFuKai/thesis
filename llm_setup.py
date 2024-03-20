@@ -1,10 +1,8 @@
 import torch
-from auto_gptq import BaseQuantizeConfig, AutoGPTQForCausalLM
-from langchain_core.callbacks import CallbackManager, StreamingStdOutCallbackHandler
-from transformers import BitsAndBytesConfig, AutoModelForCausalLM, AutoTokenizer, pipeline, TextIteratorStreamer
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
 from langchain_community.vectorstores.faiss import FAISS
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from transformers import BitsAndBytesConfig, AutoModelForCausalLM, AutoTokenizer, pipeline, TextIteratorStreamer
 
 
 def tokenizer_setup(model_id):
