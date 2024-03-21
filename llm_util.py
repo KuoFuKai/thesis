@@ -30,7 +30,7 @@ def ask_question(llm, rag, streamer, question):
         ask_process.join()
         ask_process = None
 
-    say("處理中請稍後")
+    # say("處理中請稍後")
     formatted_question = "{object}，{question}".format(object=variable.detected_obj, question=question)
     rag_chain = RetrievalQA.from_chain_type(llm=llm,
                                             retriever=rag,
