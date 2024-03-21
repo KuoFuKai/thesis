@@ -12,7 +12,7 @@ from tts_util import say, say_queue
 
 # 定義一個prompt模板。
 template = """<s>[INST]
-你是一名導遊，遊客都只聽得懂中文，眼前看到的建築物，若請你介紹，請你簡短介紹，若問您問題，也請您簡短回答。
+你是一名導遊，遊客都只聽得懂中文，眼前看到的建築物，請您盡一切可能精簡回覆。
 提示：{context}
 問題：{question}
 [/INST] </s> """

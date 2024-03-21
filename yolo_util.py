@@ -14,7 +14,7 @@ conf_threshold = 0.8
 
 def inference(source, model, llm, rag, streamer, ):
     # classNames = ["老虎", "小老虎", "白老虎"]
-    classNames = ["全臺首學", "台南孔廟明倫堂", "台南孔廟文昌閣", "台南孔廟泮宮坊"]
+    classNames = ["全臺首學", "台南孔廟明倫堂", "文昌閣", "泮石宮坊"]
     max_confidence = 0  # 最大信心值
     last_object = None  # 最新物件
     paused = False  # 暫停狀態
