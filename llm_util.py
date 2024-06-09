@@ -1,6 +1,8 @@
 import multiprocessing
 import os
 import threading
+import gc
+import torch
 from multiprocessing import Queue
 
 import speech_recognition as sr
@@ -99,6 +101,8 @@ def interact(llm, rag, streamer):
                     if 'yes' in confirmation:
                         answer = ask_question(llm, rag, streamer, user_input)
                         say(answer)
+                        torch.cuda.empty_cache()
+                        gc.collect()
                         break
                     elif 'no' in confirmation:
                         say("已取消")
